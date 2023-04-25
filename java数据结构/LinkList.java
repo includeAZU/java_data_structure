@@ -11,11 +11,11 @@ public class LinkList implements Iterable<Integer> {
     private static class node {
         // 只有class node没有使用非本类属性,才可以使用 static
         int value;
-        node Node;// 指向下一节点
+        node next;// 指向下一节点
 
         public node(int value, node node) {
             this.value = value;
-            this.Node = node;
+            this.next = node;
 
         }
     }
@@ -28,7 +28,7 @@ public class LinkList implements Iterable<Integer> {
         }
         // 链表不为空
         node add_Node = new node(value, null);
-        add_Node.Node = head;
+        add_Node.next = head;
         head = add_Node;
         // 创建头节点
 
@@ -41,7 +41,7 @@ public class LinkList implements Iterable<Integer> {
         p = head;
         while (p != null) {
             System.out.println(p.value);
-            p = p.Node;
+            p = p.next;
         }
 
     }
@@ -53,7 +53,7 @@ public class LinkList implements Iterable<Integer> {
         p = head;
         while (p != null) {
             comsumer.accept(p.value);
-            p = p.Node;
+            p = p.next;
         }
 
     }
@@ -72,7 +72,7 @@ public class LinkList implements Iterable<Integer> {
 
             public Integer next() {
                 int v = p.value;
-                p = p.Node;
+                p = p.next;
                 return v;
 
             }
@@ -86,7 +86,7 @@ public class LinkList implements Iterable<Integer> {
             return null;
         }
         node p = null;
-        for (p = head; p.Node != null; p = p.Node) {
+        for (p = head; p.next != null; p = p.next) {
 
         }
         return p;
@@ -101,15 +101,16 @@ public class LinkList implements Iterable<Integer> {
 
         }
 
-        last.Node = new node(value, null);
+        last.next = new node(value, null);
 
     }
 
+    // 查找节点
     private node findNode(int index) {
         node p = head;
         int i = 0;
 
-        for (p = head; p != null; p = p.Node, i++) {
+        for (p = head; p != null; p = p.next, i++) {
             if (i == index) {
                 return p;
 
@@ -128,6 +129,42 @@ public class LinkList implements Iterable<Integer> {
         return i.value;
 
     }
+
+    // 插入节点
+    public void insert(int index, int value)
+
+    {
+        if (index == 0) {// 等于0
+            addFrist(value);
+            return;
+        }
+        node prve = findNode(index - 1);// 返回找到的元素
+        if (prve == null) {
+            throw new IllegalArgumentException(
+                    String.format("index[%d]不合法%n", index));
+
+        }
+        prve.next = new node(value, prve.next);
+
+    }
+//删除元素
+    public void remove(int index) {
+        if (index == 0) {
+            head = head.next;
+            return;
+        }
+        node prve = findNode(index - 1);// 返回找到的元素(要删除元素的前驱)
+        if (prve.next == null) {//找到要删除元素前驱,但删除元素不存在
+            throw new IllegalArgumentException(
+                    String.format("index[%d]不合法%n", index));
+
+        }
+
+        prve.next = prve.next.next;
+
+    }
+
+
 }
 
 class mytest {
@@ -137,8 +174,10 @@ class mytest {
         test.add_last(1);
         test.add_last(2);
         test.add_last(3);
+        test.insert(0, 99);
+        test.remove(0);
         test.loop();
-        System.out.println(test.get(5));
+        System.out.println(test.get(2));
         // test.loop1(value -> {System.out.println(value);});
         // for (Integer value : test) {
         // System.out.println(value);
